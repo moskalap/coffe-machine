@@ -22,6 +22,7 @@ public class CoffeeMachine {
     }
 
     public void insertCoin() throws CoffeeMachineException {
+        if (coffeLimit == 0) throw new CoffeeMachineException("Maximum coffee limit exceeded");
         if (this.isCoin) throw new CoffeeMachineException("There is a coin inside a machine already");
         else {
             System.out.println("Inserted a coin!");
@@ -42,8 +43,6 @@ public class CoffeeMachine {
     public void pushButton() throws CoffeeMachineException {
         if (!isCoin) throw new CoffeeMachineException("There is no coin!");
         if (coffeeReady) throw new CoffeeMachineException("There is coffee to take");
-        if (coffeLimit == 0) throw new CoffeeMachineException("Maximum coffee limit exceeded");
-
 
         System.out.print("Preparing Coffee");
         for (int i = 0; i < 5; i++) {
