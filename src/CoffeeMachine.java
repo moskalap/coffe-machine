@@ -1,73 +1,80 @@
-import java.util.concurrent.TimeUnit;
-
-
-/**
- * Created by przemek on 16.05.17.
- */
 public class CoffeeMachine {
-    private int coffeLimit;
-    private boolean isCoin = false;
+    private int coffeeLimit;
+    private MoneyContainer moneyContainer;
+    private CoffeeMaker coffeeMaker;
     private boolean coffeeReady;
 
-    CoffeeMachine(int coffeLimit) {
-        this.coffeLimit = coffeLimit;
+    CoffeeMachine(int coffeeLimit) {
+        this.moneyContainer = new MoneyContainer();
+        this.coffeeMaker = new CoffeeMaker();
+        this.coffeeLimit = coffeeLimit;
+
     }
 
-    public int getCoffeLimit() {
-        return coffeLimit;
+    public int getCoffeeLimit() {
+        return coffeeLimit;
     }
 
-    public void setCoffeLimit(int coffeLimit) {
-        this.coffeLimit = coffeLimit;
+    public void setCoffeeLimit(int coffeeLimit) {
+        this.coffeeLimit = coffeeLimit;
     }
 
-    public void insertCoin() throws CoffeeMachineException {
-        if (this.isCoin) throw new CoffeeMachineException("There is a coin inside a machine already");
-        else {
-            System.out.println("Inserted a coin!");
-            this.isCoin = true;
-
+    public void insertCoin(double c) {
+        if (coffeeLimit == 0) {
+            System.out.println("Coffee limit exceeded!");
+            return;
         }
-    }
 
-    public void retrieveCoin() throws CoffeeMachineException {
-        if (isCoin) {
-            isCoin = false;
-            System.out.println("Returned the coin!");
-        } else {
-            throw new CoffeeMachineException("There is no coin in coffe machine!");
+        try {
+            this.moneyContainer.insertCoin(c);
+        } catch (CoffeeMachineException e) {
+            System.out.println(e.toString());
         }
+
     }
 
-    public void pushButton() throws CoffeeMachineException {
-        if (!isCoin) throw new CoffeeMachineException("There is no coin!");
-        if (coffeeReady) throw new CoffeeMachineException("There is coffee to take");
-        if (coffeLimit == 0) throw new CoffeeMachineException("Maximum coffee limit exceeded");
+    public void retrieveCoin() {
+        try {
+            this.moneyContainer.retrieveCoin();
+        } catch (CoffeeMachineException e) {
+            System.out.println(e.toString());
+        }
 
+    }
 
-        System.out.print("Preparing Coffee");
-        for (int i = 0; i < 5; i++) {
-            System.out.print(" . ");
-            try {
-                TimeUnit.SECONDS.sleep(1);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+    public void pushButton() {
+        try {
+            if (!this.moneyContainer.isCoin()) {
+                System.out.println("There is no coin!");
+                return;
             }
+            if (coffeeReady) {
+                System.out.println("There is already coffee to take");
+                return;
+            }
+
+            this.coffeeMaker.makeCoffee();
+
+            this.moneyContainer.makeTransaction();
+        } catch (CoffeeMachineException e) {
+            System.out.println(e.toString());
         }
-        System.out.println("Coffee is ready!");
-        this.coffeLimit--;
-        this.coffeeReady=true;
-        this.isCoin=false;
+        this.coffeeLimit--;
+        this.coffeeReady = true;
+
 
     }
 
-    public void getCoffe() throws CoffeeMachineException {
-       if(!coffeeReady) throw new CoffeeMachineException("You have to first insert coin and make a coffe!");
-       this.coffeeReady = false;
-       System.out.println("Enjoy your coffee!");
+    public void getCoffee() {
+        if (!coffeeReady) {
+            System.out.println("You have to first make a coffee");
+            return;
+        }
+        this.coffeeReady = false;
+        System.out.println("Enjoy your coffee!");
     }
 
-    public void supplyCoffee(int l){
-        this.coffeLimit += l;
+    public void supplyCoffee(int l) {
+        this.coffeeLimit += l;
     }
 }
