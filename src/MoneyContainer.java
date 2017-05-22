@@ -1,6 +1,4 @@
-/**
- * Created by Przemysław Moskała on 22.05.17 22:39.
- */
+
 public class MoneyContainer {
     private double sum;
     private double coin;
