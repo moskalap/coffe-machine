@@ -1,8 +1,6 @@
 import java.util.concurrent.TimeUnit;
 
-/**
- * Created by Przemysław Moskała on 22.05.17 22:46.
- */
+
 public class CoffeeMaker {
 
     CoffeeMaker(){
